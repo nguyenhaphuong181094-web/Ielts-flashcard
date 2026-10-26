@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Country / Rural Life Vocabulary: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ecda;
+    --surface: #fdfbf2;
+    --ink: #2b3320;
+    --muted: #5c6650;
+    --line: #d9d3b0;
+    --brand: #3f7d4a;
+    --brand-deep: #2c5c35;
+    --cream: #fdfbf2;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .005em;
+  }
+  .s1 { display: block; color: var(--brand-deep); font-size: clamp(30px, 8.6vw, 68px); }
+  .s2 {
+    display: inline-block;
+    background: var(--brand);
+    color: var(--cream);
+    font-size: clamp(24px, 7.5vw, 48px);
+    padding: .08em 1.2em .12em .4em;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+    margin-top: .16em;
+  }
+  .sub { margin: 14px 0 22px; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--brand); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .seg button {
+    border: 0; background: transparent; color: var(--brand);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--brand); color: var(--cream); }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px; max-width: 100%;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--brand); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 340px;
+    padding: 66px 24px 26px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--accent); color: var(--cream); }
+  .back { background: var(--surface); border: 3px solid var(--accent); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px; max-width: calc(100% - 44px);
+    font-size: 13px; font-weight: 600; line-height: 1.35;
+    padding: 4px 12px; border-radius: 14px; color: var(--cream);
+  }
+  .front .chip { background: rgba(255, 255, 255, .2); }
+  .back .chip { background: var(--accent); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(34px, 9.5vw, 54px); line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid var(--cream);
+  }
+  .hint { font-size: 14px; opacity: .9; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(28px, 7.5vw, 38px); line-height: 1.12;
+    color: var(--accent); overflow-wrap: anywhere;
+  }
+  .def { margin: 0; font-size: 16px; }
+  .syn { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .syn li {
+    font-size: 15px; font-weight: 500; padding: 4px 12px; border-radius: 999px;
+    background: #f0e9cf;
+    background: color-mix(in srgb, var(--accent) 14%, #fff);
+    border: 2px solid var(--accent);
+  }
+  .exs { display: flex; flex-direction: column; gap: 10px; }
+  .ex { margin: 0; padding-left: 12px; border-left: 4px solid var(--accent); font-size: 17px; line-height: 1.5; }
+  mark {
+    background: #e6dcae;
+    background: color-mix(in srgb, var(--accent) 24%, #fff);
+    color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600;
+  }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.no { border-color: var(--brand); color: var(--brand); }
+  .btn.yes { background: var(--brand); border-color: var(--brand); color: var(--cream); }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--brand); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--brand); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 3px solid var(--brand); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; color: var(--brand); }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="s1">COUNTRY / RURAL LIFE</span><span class="s2">VOCABULARY LIST</span></h1>
+  <p class="sub">Flashcard ôn từ vựng chủ đề Country / Rural Life (IELTS Speaking): lật thẻ để xem nghĩa và câu ví dụ bằng tiếng Anh.</p>
+
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  types:  'Types of places (where)',
+  env:    'Environment & natural features',
+  pop:    'Population & atmosphere',
+  life:   'Lifestyle & feelings',
+  house:  'Housing & living conditions',
+  more:   'More IELTS Speaking words (Band 7+)'
+};
+const ACCENT = {
+  types: '#2c6e4f', env: '#3a6e8a', pop: '#5a7a1e', life: '#b4631a', house: '#a8491a', more: '#6b4a9e'
+};
+
+/* w = term, d = meaning, also = related forms, ex = examples (t = the term as it appears in the sentence) */
+const CARDS = [
+  { g: 'types', w: 'countryside', d: 'Land outside towns and cities, with fields, farms, and villages.',
+    ex: [{ s: 'My grandparents live in the countryside, surrounded by rice fields.', t: 'countryside' }] },
+  { g: 'types', w: 'village', d: 'A small community in a rural area, smaller than a town.',
+    ex: [{ s: 'The village has only one small school and a weekly market.', t: 'village' }] },
+  { g: 'types', w: 'rural areas', d: 'Areas in the countryside, away from cities.',
+    ex: [{ s: 'Many young people leave rural areas to find work in the city.', t: 'rural areas' }] },
+  { g: 'types', w: 'remote areas', d: 'Places that are far from cities and difficult to reach; very natural and undeveloped.',
+    ex: [{ s: 'Some remote areas still have no access to electricity or paved roads.', t: 'remote areas' }] },
+
+  { g: 'env', w: 'dense vegetation', d: 'A thick growth of plants and trees.',
+    ex: [{ s: 'The hillsides are covered with dense vegetation and wild flowers.', t: 'dense vegetation' }] },
+  { g: 'env', w: 'natural surroundings', d: 'The natural environment around a place.',
+    ex: [{ s: 'Visitors come to enjoy the natural surroundings and fresh mountain air.', t: 'natural surroundings' }] },
+  { g: 'env', w: 'walk in nature', d: 'To spend time walking outdoors in a natural environment.',
+    ex: [{ s: 'Every weekend, we walk in nature to escape the noise of the city.', t: 'walk in nature' }] },
+  { g: 'env', w: 'idyllic setting', d: 'A peaceful, beautiful place that seems almost perfect.',
+    ex: [{ s: 'The farmhouse sits in an idyllic setting beside a quiet river.', t: 'idyllic setting' }] },
+
+  { g: 'pop', w: 'sparsely populated', d: 'Having very few people living in a large area.',
+    ex: [{ s: 'The northern province is sparsely populated, with small villages scattered far apart.', t: 'sparsely populated' }] },
+  { g: 'pop', w: 'peaceful', d: 'Calm and quiet, free from disturbance.',
+    ex: [{ s: 'Life in the village is peaceful compared to the busy city.', t: 'peaceful' }] },
+  { g: 'pop', w: 'quiet', d: 'Making little or no noise.',
+    ex: [{ s: 'Nights in the countryside are quiet, with only the sound of crickets.', t: 'quiet' }] },
+
+  { g: 'life', w: 'relieve work-related stress', d: 'To reduce the tension and pressure caused by work.',
+    ex: [{ s: 'Many city workers visit the countryside on weekends to relieve work-related stress.', t: 'relieve work-related stress' }] },
+  { g: 'life', w: 'slow-paced lifestyle', d: 'A way of living in which things happen slowly and calmly.',
+    ex: [{ s: 'Rural areas offer a slow-paced lifestyle that many city dwellers find appealing.', t: 'slow-paced lifestyle' }] },
+  { g: 'life', w: 'monotonous', d: 'Boringly repetitive and lacking variety; can feel dull for some people.',
+    ex: [{ s: 'Some teenagers find rural life monotonous because there is little entertainment.', t: 'monotonous' }] },
+
+  { g: 'house', w: 'poor housing / run-down houses', d: 'Homes that are in bad condition, old, and poorly maintained.',
+    ex: [
+      { s: 'Poor housing is still a problem in some remote villages.', t: 'Poor housing' },
+      { s: 'Many run-down houses in the area lack basic repairs.', t: 'run-down houses' }
+    ] },
+  { g: 'house', w: 'inadequate sewage facilities', d: 'Waste water systems that are not good enough for people\'s needs.',
+    ex: [{ s: 'Inadequate sewage facilities can lead to serious health problems in rural communities.', t: 'Inadequate sewage facilities' }] },
+  { g: 'house', w: 'water and sanitation problems', d: 'Difficulties with clean water supply and hygiene systems.',
+    ex: [{ s: 'Water and sanitation problems are more common in underdeveloped rural regions.', t: 'Water and sanitation problems' }] },
+  { g: 'house', w: 'deprived area', d: 'A place that lacks basic facilities, money, or opportunities.',
+    ex: [{ s: 'Children growing up in a deprived area often have limited access to good schools.', t: 'deprived area' }] },
+
+  { g: 'more', w: 'close-knit community', d: 'A group of people who know and support each other closely.',
+    ex: [{ s: 'In a close-knit community, neighbours often help each other during harvest season.', t: 'close-knit community' }] },
+  { g: 'more', w: 'fresh air', d: 'Clean, unpolluted air.',
+    ex: [{ s: 'One of the main attractions of rural life is the fresh air and open space.', t: 'fresh air' }] },
+  { g: 'more', w: 'agricultural lifestyle', d: 'A way of living based on farming.',
+    ex: [{ s: 'Most families in the valley still follow an agricultural lifestyle, growing rice and vegetables.', t: 'agricultural lifestyle' }] },
+  { g: 'more', w: 'low cost of living', d: 'Cheaper daily expenses compared to a city.',
+    ex: [{ s: 'The low cost of living is one reason many retirees choose to settle in the countryside.', t: 'low cost of living' }] },
+  { g: 'more', w: 'limited access to services', d: 'Difficulty reaching services such as hospitals, schools, and entertainment.',
+    ex: [{ s: 'Rural residents often face limited access to services such as hospitals and schools.', t: 'limited access to services' }] },
+  { g: 'more', w: 'traditional way of life', d: 'Customs and habits passed down from earlier generations.',
+    ex: [{ s: 'The village has preserved a traditional way of life for hundreds of years.', t: 'traditional way of life' }] },
+  { g: 'more', w: 'self-sufficient lifestyle', d: 'A way of living in which people grow their own food and rely on themselves.',
+    ex: [{ s: 'Many farming families lead a self-sufficient lifestyle, growing most of what they eat.', t: 'self-sufficient lifestyle' }] },
+  { g: 'more', w: 'underdeveloped infrastructure', d: 'Poor roads, transport, and other basic systems.',
+    ex: [{ s: 'Underdeveloped infrastructure makes it difficult for farmers to transport goods to the market.', t: 'Underdeveloped infrastructure' }] }
+];
+
+const KEY = 'countryside-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(e) {
+  const i = e.s.toLowerCase().indexOf(e.t.toLowerCase());
+  return [e.s.slice(0, i), e.s.slice(i, i + e.t.length), e.s.slice(i + e.t.length)];
+}
+function sentenceMarked(e) { const [a, m, b] = parts(e); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(e) {
+  const [a, , b] = parts(e);
+  const w = Math.min(Math.max(e.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c.ex[0]) + '</p><span class="hint">Gợi ý: ' + esc(c.d) + ' Nhấn để xem đáp án.</span>';
+  const back = chip +
+    '<div class="term">' + esc(c.w) + '</div>' +
+    '<p class="def">' + esc(c.d) + '</p>' +
+    (c.also ? '<ul class="syn">' + c.also.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '') +
+    '<div class="exs">' + c.ex.map(e => '<p class="ex">' + sentenceMarked(e) + '</p>').join('') + '</div>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ vựng, nhấn để lật" style="--accent:' + ACCENT[c.g] + '">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

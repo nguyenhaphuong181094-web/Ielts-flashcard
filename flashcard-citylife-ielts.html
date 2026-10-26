@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>City Life Vocabulary List: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f1ecfa;
+    --surface: #fdfbff;
+    --ink: #2b2240;
+    --muted: #6a5d85;
+    --line: #d9cdf0;
+    --brand: #6b3fb0;
+    --brand-deep: #4e2d8a;
+    --cream: #fdfbff;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .005em;
+  }
+  .s1 { display: block; color: var(--brand-deep); font-size: clamp(38px, 11vw, 88px); }
+  .s2 {
+    display: inline-block;
+    background: var(--brand);
+    color: var(--cream);
+    font-size: clamp(24px, 7.5vw, 48px);
+    padding: .08em 1.2em .12em .4em;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+    margin-top: .16em;
+  }
+  .sub { margin: 14px 0 22px; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--brand); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .seg button {
+    border: 0; background: transparent; color: var(--brand);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--brand); color: var(--cream); }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px; max-width: 100%;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--brand); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 340px;
+    padding: 66px 24px 26px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--accent); color: var(--cream); }
+  .back { background: var(--surface); border: 3px solid var(--accent); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px; max-width: calc(100% - 44px);
+    font-size: 13px; font-weight: 600; line-height: 1.35;
+    padding: 4px 12px; border-radius: 14px; color: var(--cream);
+  }
+  .front .chip { background: rgba(255, 255, 255, .2); }
+  .back .chip { background: var(--accent); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(34px, 9.5vw, 54px); line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid var(--cream);
+  }
+  .hint { font-size: 14px; opacity: .9; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(28px, 7.5vw, 38px); line-height: 1.12;
+    color: var(--accent); overflow-wrap: anywhere;
+  }
+  .def { margin: 0; font-size: 16px; }
+  .syn { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .syn li {
+    font-size: 15px; font-weight: 500; padding: 4px 12px; border-radius: 999px;
+    background: #f0e9cf;
+    background: color-mix(in srgb, var(--accent) 14%, #fff);
+    border: 2px solid var(--accent);
+  }
+  .exs { display: flex; flex-direction: column; gap: 10px; }
+  .ex { margin: 0; padding-left: 12px; border-left: 4px solid var(--accent); font-size: 17px; line-height: 1.5; }
+  mark {
+    background: #e6dcae;
+    background: color-mix(in srgb, var(--accent) 24%, #fff);
+    color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600;
+  }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.no { border-color: var(--brand); color: var(--brand); }
+  .btn.yes { background: var(--brand); border-color: var(--brand); color: var(--cream); }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--brand); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--brand); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 3px solid var(--brand); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; color: var(--brand); }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="s1">CITY LIFE</span><span class="s2">VOCABULARY LIST</span></h1>
+  <p class="sub">Flashcard ôn từ vựng chủ đề City Life (IELTS): lật thẻ để xem nghĩa và câu ví dụ bằng tiếng Anh.</p>
+
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  types:   'Types of places in a city',
+  people:  'People living in the city',
+  build:   'Buildings & physical features',
+  infra:   'Infrastructure & facilities',
+  atmos:   'Describing city atmosphere',
+  adv:     'Advantages of city life',
+  dis:     'Disadvantages of city life',
+  more:    'More IELTS Speaking words (Band 7+)'
+};
+const ACCENT = {
+  types: '#1f7a7a', people: '#8a4fb0', build: '#2c6e9e', infra: '#b07a1a',
+  atmos: '#c1501e', adv: '#3a5fc4', dis: '#8a2560', more: '#5230a0'
+};
+
+/* w = term, d = meaning, also = related forms, ex = examples (t = the term as it appears in the sentence) */
+const CARDS = [
+  { g: 'types', w: 'city / urban area', d: 'A large town, or an area with many buildings and a high population, as opposed to the countryside.',
+    ex: [{ s: 'More than half of the world\'s population now lives in urban areas.', t: 'urban areas' }] },
+  { g: 'types', w: 'inner city / downtown / city centre', d: 'The central part of a city.',
+    ex: [
+      { s: 'Rents in the inner city are often much higher than in the suburbs.', t: 'inner city' },
+      { s: 'Many offices and shops are located downtown.', t: 'downtown' }
+    ] },
+  { g: 'types', w: 'residential areas / industrial zones', d: 'Residential areas are places where people live. Industrial zones are places where factories and industries are located.',
+    ex: [
+      { s: 'The new metro line connects residential areas to the industrial zone outside the city.', t: 'residential areas' },
+      { s: 'Factories in the industrial zone provide thousands of jobs.', t: 'industrial zone' }
+    ] },
+  { g: 'types', w: 'suburbs / outskirts', d: 'The areas around the edge of a city, away from the centre.',
+    ex: [
+      { s: 'Many young families prefer to live in the suburbs, where houses are cheaper.', t: 'suburbs' },
+      { s: 'A new shopping mall was built on the outskirts of the city.', t: 'outskirts' }
+    ] },
+
+  { g: 'people', w: 'citizens', d: 'People who officially belong to a city or country.',
+    ex: [{ s: 'The mayor promised to improve public services for all citizens.', t: 'citizens' }] },
+  { g: 'people', w: 'residents', d: 'People who live in a particular place.',
+    ex: [{ s: 'Local residents complained about the noise from the construction site.', t: 'residents' }] },
+  { g: 'people', w: 'city dwellers', d: 'People who live in a city.',
+    ex: [{ s: 'City dwellers often have less contact with nature than people in rural areas.', t: 'City dwellers' }] },
+  { g: 'people', w: 'urbanites', d: 'A more informal word for people who live in cities.',
+    ex: [{ s: 'Urbanites increasingly rely on food delivery apps for their meals.', t: 'Urbanites' }] },
+
+  { g: 'build', w: 'skyscrapers / high-rise buildings', d: 'Very tall buildings, usually found in city centres.',
+    ex: [
+      { s: 'The skyline is dominated by skyscrapers that reach hundreds of metres high.', t: 'skyscrapers' },
+      { s: 'Most residents in this district live in high-rise buildings.', t: 'high-rise buildings' }
+    ] },
+  { g: 'build', w: 'multi-storey buildings / blocks', d: 'Buildings with several floors.',
+    ex: [{ s: 'The city has built more multi-storey car parks to reduce street parking.', t: 'multi-storey car parks' }] },
+  { g: 'build', w: 'office blocks', d: 'Large buildings containing many offices.',
+    ex: [{ s: 'During rush hour, thousands of workers pour out of the office blocks downtown.', t: 'office blocks' }] },
+  { g: 'build', w: 'public places', d: 'Places that anyone can visit, such as parks and squares.',
+    ex: [{ s: 'The city has created more public places where families can relax together.', t: 'public places' }] },
+  { g: 'build', w: 'upmarket shops', d: 'Expensive, high-quality shops. Similar: high-end, luxury stores.',
+    ex: [{ s: 'The street is lined with upmarket shops selling designer clothing.', t: 'upmarket shops' }] },
+
+  { g: 'infra', w: 'infrastructure', d: 'The basic systems a city needs to function, such as roads, water, and power.',
+    ex: [{ s: 'Rapid population growth has put pressure on the city\'s infrastructure.', t: 'infrastructure' }] },
+  { g: 'infra', w: 'transport links', d: 'The roads, railways, and other connections that let people travel between places.',
+    ex: [{ s: 'Good transport links make it easy to commute between the suburbs and the city centre.', t: 'transport links' }] },
+  { g: 'infra', w: 'educational facilities', d: 'Schools, universities, and other places for learning.',
+    ex: [{ s: 'The new district offers excellent educational facilities for young families.', t: 'educational facilities' }] },
+  { g: 'infra', w: 'medical services / healthcare', d: 'Hospitals, clinics, and other services that treat illness.',
+    ex: [{ s: 'Access to good healthcare is one reason many people move to cities.', t: 'healthcare' }] },
+  { g: 'infra', w: 'entertainment / leisure facilities', d: 'Cinemas, gyms, parks, and other places for fun and relaxation.',
+    ex: [{ s: 'The city centre offers a wide range of entertainment facilities, from cinemas to concert halls.', t: 'entertainment facilities' }] },
+
+  { g: 'atmos', w: 'lively / vibrant / bustling', d: 'Full of energy, activity, and excitement.',
+    ex: [
+      { s: 'The night market has a vibrant atmosphere full of music and street food.', t: 'vibrant' },
+      { s: 'The bustling streets of the old quarter are packed with shoppers all day.', t: 'bustling' }
+    ] },
+  { g: 'atmos', w: 'sprawling city', d: 'A city that covers a very large area and keeps expanding rapidly.',
+    ex: [{ s: 'The sprawling city has swallowed up several small towns over the past decade.', t: 'sprawling city' }] },
+  { g: 'atmos', w: 'intensive urban growth', d: 'Fast and large-scale expansion of a city.',
+    ex: [{ s: 'Intensive urban growth has led to serious traffic problems in the capital.', t: 'Intensive urban growth' }] },
+
+  { g: 'adv', w: 'everything is at your fingertips', d: 'Everything you need is very easy to find or reach.',
+    ex: [{ s: 'Living downtown means everything is at your fingertips, from shops to restaurants.', t: 'everything is at your fingertips' }] },
+  { g: 'adv', w: 'easy access to facilities', d: 'The ability to reach services such as libraries, hospitals, and shopping centres without difficulty.',
+    ex: [{ s: 'City residents enjoy easy access to libraries, hospitals, and shopping centres.', t: 'easy access to libraries, hospitals, and shopping centres' }] },
+  { g: 'adv', w: 'better transport links', d: 'Improved connections such as buses, trains, and roads.',
+    ex: [{ s: 'Better transport links have reduced commuting time for many workers.', t: 'Better transport links' }] },
+  { g: 'adv', w: 'more job opportunities', d: 'A greater number of chances to find work.',
+    ex: [{ s: 'Young graduates often move to the city because of the greater job opportunities.', t: 'job opportunities' }] },
+  { g: 'adv', w: 'a faster pace of life', d: 'A way of living in which things happen quickly; good for ambitious people.',
+    ex: [{ s: 'Ambitious people are often drawn to the faster pace of life in big cities.', t: 'faster pace of life' }] },
+
+  { g: 'dis', w: 'high levels of air and noise pollution', d: 'A large amount of dirty air and unwanted loud sound.',
+    ex: [{ s: 'High levels of air and noise pollution are common complaints among city residents.', t: 'High levels of air and noise pollution' }] },
+  { g: 'dis', w: 'over-polluted environment', d: 'Surroundings that contain too much pollution.',
+    ex: [{ s: 'Children growing up in an over-polluted environment may develop breathing problems.', t: 'over-polluted environment' }] },
+  { g: 'dis', w: 'higher cost of living', d: 'The need to spend more money on daily life, such as accommodation, transport, and housing.',
+    ex: [{ s: 'A higher cost of living, including expensive accommodation and housing, is a major drawback of city life.', t: 'higher cost of living' }] },
+  { g: 'dis', w: 'overcrowded / densely populated', d: 'Having too many people living in a small area.',
+    ex: [
+      { s: 'The old district is overcrowded, with narrow streets and little green space.', t: 'overcrowded' },
+      { s: 'This is one of the most densely populated neighbourhoods in the country.', t: 'densely populated' }
+    ] },
+  { g: 'dis', w: 'lack of housing', d: 'Not enough homes for the number of people who need them.',
+    ex: [{ s: 'A lack of housing has pushed prices far beyond what young families can afford.', t: 'lack of housing' }] },
+  { g: 'dis', w: 'narrow and cramped living conditions', d: 'Small, uncomfortable living spaces with little room to move.',
+    ex: [{ s: 'Many low-income families live in narrow and cramped living conditions in the inner city.', t: 'narrow and cramped living conditions' }] },
+  { g: 'dis', w: 'the rat race', d: 'A stressful, competitive way of life, especially in a big city.',
+    ex: [{ s: 'After years in the rat race, she decided to move to the countryside for a quieter life.', t: 'the rat race' }] },
+
+  { g: 'more', w: 'urbanization', d: 'The growth of cities as more people move from the countryside to urban areas.',
+    ex: [{ s: 'Rapid urbanization has transformed this region over the past twenty years.', t: 'urbanization' }] },
+  { g: 'more', w: 'traffic congestion', d: 'Heavy traffic that makes roads slow and crowded.',
+    ex: [{ s: 'Traffic congestion during rush hour can add an hour to the daily commute.', t: 'Traffic congestion' }] },
+  { g: 'more', w: 'public transportation', d: 'Buses, metro, trains, and other shared transport services.',
+    ex: [{ s: 'Investing in public transportation can help reduce traffic congestion.', t: 'public transportation' }] },
+  { g: 'more', w: 'housing shortage', d: 'A situation in which there are not enough homes available.',
+    ex: [{ s: 'The housing shortage has driven rents to record levels in the capital.', t: 'housing shortage' }] },
+  { g: 'more', w: 'cost of living', d: 'The amount of money needed to pay for daily expenses.',
+    ex: [{ s: 'The cost of living in the capital is far higher than in smaller towns.', t: 'cost of living' }] },
+  { g: 'more', w: 'employment prospects', d: 'The chances of finding a job in the future.',
+    ex: [{ s: 'Graduates often move to big cities because of better employment prospects.', t: 'employment prospects' }] },
+  { g: 'more', w: 'social amenities', d: 'Facilities that make daily life more convenient and enjoyable, such as parks and libraries.',
+    ex: [{ s: 'The new neighbourhood offers excellent social amenities, including parks and sports centres.', t: 'social amenities' }] },
+  { g: 'more', w: 'urban lifestyle', d: 'A modern way of living that is typical of cities.',
+    ex: [{ s: 'An urban lifestyle often means less time outdoors and more time commuting.', t: 'urban lifestyle' }] }
+];
+
+const KEY = 'citylife-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(e) {
+  const i = e.s.toLowerCase().indexOf(e.t.toLowerCase());
+  return [e.s.slice(0, i), e.s.slice(i, i + e.t.length), e.s.slice(i + e.t.length)];
+}
+function sentenceMarked(e) { const [a, m, b] = parts(e); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(e) {
+  const [a, , b] = parts(e);
+  const w = Math.min(Math.max(e.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c.ex[0]) + '</p><span class="hint">Gợi ý: ' + esc(c.d) + ' Nhấn để xem đáp án.</span>';
+  const back = chip +
+    '<div class="term">' + esc(c.w) + '</div>' +
+    '<p class="def">' + esc(c.d) + '</p>' +
+    (c.also ? '<ul class="syn">' + c.also.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '') +
+    '<div class="exs">' + c.ex.map(e => '<p class="ex">' + sentenceMarked(e) + '</p>').join('') + '</div>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ vựng, nhấn để lật" style="--accent:' + ACCENT[c.g] + '">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

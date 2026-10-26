@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Synonym 1: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef5fb;
+    --band: #bfe0f7;
+    --surface: #ffffff;
+    --ink: #14202b;
+    --muted: #506070;
+    --line: #c9d9e8;
+    --blue: #1f6fb2;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .top { background: var(--band); padding: 26px 16px 22px; }
+  .top-in { max-width: 680px; margin: 0 auto; }
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    font-size: clamp(52px, 16vw, 116px);
+    line-height: .95;
+    letter-spacing: .01em;
+    color: #000;
+  }
+  .sub { margin: 10px 0 0; color: #23384a; font-size: 15px; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 16px 56px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--blue); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .seg button {
+    border: 0; background: transparent; color: var(--blue);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--blue); color: #fff; }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px; max-width: 100%;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--blue); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--blue); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 340px;
+    padding: 66px 24px 26px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--accent); color: var(--ink); }
+  .back { background: var(--surface); border: 3px solid var(--accent); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px; max-width: calc(100% - 44px);
+    font-size: 13px; font-weight: 600; line-height: 1.35;
+    padding: 4px 12px; border-radius: 14px; color: var(--ink);
+  }
+  .front .chip { background: rgba(255, 255, 255, .55); }
+  .back .chip { background: var(--accent); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(36px, 10vw, 56px); line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid var(--ink);
+  }
+  .hint { font-size: 14px; opacity: .8; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(28px, 7.5vw, 38px); line-height: 1.12;
+    overflow-wrap: anywhere;
+  }
+  .def { margin: -4px 0 0; font-size: 15px; color: var(--muted); }
+  .syn { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .syn li {
+    font-size: 15px; font-weight: 500; padding: 4px 12px; border-radius: 999px;
+    background: #fff4d6;
+    background: color-mix(in srgb, var(--accent) 30%, #fff);
+    border: 2px solid var(--accent);
+  }
+  .exs { display: flex; flex-direction: column; gap: 10px; }
+  .ex { margin: 0; padding-left: 12px; border-left: 4px solid var(--accent); font-size: 17px; line-height: 1.5; }
+  mark {
+    background: #ffe9a8;
+    background: color-mix(in srgb, var(--accent) 50%, #fff);
+    color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600;
+  }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.no { border-color: var(--blue); color: var(--blue); }
+  .btn.yes { background: var(--blue); border-color: var(--blue); color: #fff; }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--blue); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--blue); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 3px solid var(--blue); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <h1>SYNONYM</h1>
+    <p class="sub">Flashcard ôn từ đồng nghĩa (Synonym 1): lật thẻ để xem các từ thay thế và câu ví dụ bằng tiếng Anh.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  eval:  'Evaluation (adj.)',
+  imp:   'Importance & severity',
+  people:'People & society (n.)',
+  life:  'Lifestyle & economics',
+  qty:   'Quantity & connection',
+  time:  'Time'
+};
+const ACCENT = {
+  eval: '#ff9a2e', imp: '#6fcf7a', people: '#b57ee0', life: '#f5d84a', qty: '#ff6b6b', time: '#b8bcc4'
+};
+
+/* w = headword, d = optional meaning, syn = synonyms, ex = example sentences (t = the synonym used in the sentence) */
+const CARDS = [
+  { g: 'eval', w: 'bad / negative', syn: ['harmful', 'adverse', 'detrimental', 'deleterious (extremely harmful)'],
+    ex: [
+      { s: 'Too much screen time can have a detrimental effect on children.', t: 'detrimental' },
+      { s: 'Pollution has deleterious effects on marine life.', t: 'deleterious' },
+      { s: 'The new policy had an adverse impact on small farmers.', t: 'adverse' }
+    ] },
+  { g: 'eval', w: 'demerits', d: 'The disadvantages or weak points of something.', syn: ['disadvantages', 'drawbacks', 'downsides'],
+    ex: [
+      { s: 'Students should weigh the merits and demerits of studying abroad.', t: 'demerits' },
+      { s: 'The main demerit of this plan is its high cost.', t: 'demerit' }
+    ] },
+  { g: 'eval', w: 'good / positive', syn: ['beneficial', 'advantageous', 'favorable', 'best', 'fine'],
+    ex: [
+      { s: 'Regular exercise is beneficial for both body and mind.', t: 'beneficial' },
+      { s: 'The new law is advantageous to small businesses.', t: 'advantageous' },
+      { s: 'The weather was favorable, so the match went ahead as planned.', t: 'favorable' }
+    ] },
+  { g: 'eval', w: 'merits', d: 'The good points or advantages of something.', syn: ['advantages', 'strengths', 'benefits'],
+    ex: [
+      { s: 'One of the main merits of online learning is its flexibility.', t: 'merits' },
+      { s: 'The committee discussed the merits of the proposal before voting.', t: 'merits' }
+    ] },
+  { g: 'eval', w: 'do wonders for sth', d: 'To have a very good effect on something.', syn: ['have a very good effect on', 'work miracles for'],
+    ex: [
+      { s: 'Sleeping eight hours a night does wonders for your concentration.', t: 'does wonders for' },
+      { s: 'A short walk in the fresh air did wonders for my mood.', t: 'did wonders for' }
+    ] },
+
+  { g: 'imp', w: 'important', syn: ['significant', 'vital', 'crucial', 'essential (necessary)', 'imperative (urgent)'],
+    ex: [
+      { s: 'It is crucial to follow the safety guidelines.', t: 'crucial' },
+      { s: 'It is imperative that we act now to protect the forest.', t: 'imperative' },
+      { s: 'Water is vital for all living things.', t: 'vital' }
+    ] },
+  { g: 'imp', w: 'serious', syn: ['severe', 'acute'],
+    ex: [
+      { s: 'They are facing a severe water shortage.', t: 'severe' },
+      { s: 'Many big cities suffer from an acute shortage of housing.', t: 'acute' }
+    ] },
+
+  { g: 'people', w: 'people', syn: ['citizens', 'residents', 'individuals', 'the public', 'urbanites (people who live in cities)', 'people from disadvantaged backgrounds'],
+    ex: [
+      { s: 'Local residents are worried about the noise from the new airport.', t: 'residents' },
+      { s: 'Urbanites often spend hours commuting to work.', t: 'Urbanites' },
+      { s: 'The museum is open to the public every day except Monday.', t: 'the public' }
+    ] },
+  { g: 'people', w: 'students', syn: ['learners', 'pupils', 'scholars'],
+    ex: [
+      { s: 'Pupils at this school wear a uniform every day.', t: 'Pupils' },
+      { s: 'Online platforms let learners study at their own pace.', t: 'learners' }
+    ] },
+  { g: 'people', w: 'government', syn: ['authorities', 'national leaders', 'lawmakers'],
+    ex: [
+      { s: 'The authorities have introduced new rules to reduce traffic.', t: 'authorities' },
+      { s: 'Lawmakers are discussing a ban on single-use plastic.', t: 'Lawmakers' }
+    ] },
+  { g: 'people', w: 'audience', syn: ['viewers', 'watchers', 'internet users'],
+    ex: [
+      { s: 'Millions of viewers watched the final match on television.', t: 'viewers' },
+      { s: 'Internet users should be careful when sharing personal information.', t: 'Internet users' }
+    ] },
+
+  { g: 'life', w: 'expensive', syn: ['pricey', 'costly', 'prohibitive', 'exorbitant', 'high-priced'],
+    ex: [
+      { s: 'The new restaurant is quite pricey, but the food is excellent.', t: 'pricey' },
+      { s: 'The rent in the city center is exorbitant, so many students live far away.', t: 'exorbitant' },
+      { s: 'Repairing the old bridge would be too costly for the town.', t: 'costly' }
+    ] },
+  { g: 'life', w: 'cheap', syn: ['inexpensive', 'low-priced', 'affordable', 'reasonable', 'economical'],
+    ex: [
+      { s: 'We found an affordable apartment in a modern building.', t: 'affordable' },
+      { s: 'This hotel is inexpensive and close to the beach.', t: 'inexpensive' },
+      { s: 'Buses are an economical way to travel around the city.', t: 'economical' }
+    ] },
+
+  { g: 'qty', w: 'many / much', d: 'Galore comes after the noun it describes.', syn: ['plenty of', 'numbers of', 'galore'],
+    ex: [
+      { s: 'There are plenty of parks in this city.', t: 'plenty of' },
+      { s: 'The market sells fresh fruit galore.', t: 'galore' },
+      { s: 'Numbers of tourists visit the old town every summer.', t: 'Numbers of' }
+    ] },
+  { g: 'qty', w: 'a wide range / variety / diversity / array of', d: 'Use these before plural nouns to show there are many different kinds.', syn: ['a wide range of', 'a wide variety of', 'a diversity of', 'an array of'],
+    ex: [
+      { s: 'The supermarket sells a wide variety of imported food.', t: 'a wide variety of' },
+      { s: 'The museum displays an array of ancient tools.', t: 'an array of' },
+      { s: 'Students can choose from a wide range of clubs.', t: 'a wide range of' }
+    ] },
+  { g: 'qty', w: 'significantly', d: 'By a large amount.', syn: ['significantly', 'considerably', 'substantially'],
+    ex: [
+      { s: 'Prices have risen significantly over the past year.', t: 'significantly' },
+      { s: 'Traffic has improved considerably since the new bridge opened.', t: 'considerably' }
+    ] },
+  { g: 'qty', w: 'too much', syn: ['excessively', 'exaggerated measures'],
+    ex: [
+      { s: 'He spends excessively on clothes and never saves money.', t: 'excessively' },
+      { s: 'Critics said the government took exaggerated measures to control the crowd.', t: 'exaggerated measures' }
+    ] },
+  { g: 'qty', w: 'and', syn: ['as well', 'as well as', 'plus'],
+    ex: [
+      { s: 'She speaks English as well as French.', t: 'as well as' },
+      { s: 'The ticket includes breakfast, plus free Wi-Fi.', t: 'plus' },
+      { s: 'He plays the guitar and sings as well.', t: 'as well' }
+    ] },
+  { g: 'qty', w: 'prevent (v.): impede / hamper / hinder', d: 'To stop something from happening, or make it more difficult.', syn: ['impede', 'hamper', 'hinder'],
+    ex: [
+      { s: 'Fallen trees impeded traffic on the main road.', t: 'impeded' },
+      { s: 'Heavy rain hampered the rescue work.', t: 'hampered' },
+      { s: 'Poor eyesight may hinder progress at school.', t: 'hinder' }
+    ] },
+  { g: 'qty', w: 'prevent (v.): disrupt / interfere', d: 'To break or spoil something that is happening normally.', syn: ['disrupt', 'interfere (with)'],
+    ex: [
+      { s: 'Noise from the street can disrupt your sleep.', t: 'disrupt' },
+      { s: 'Using phones in class can interfere with learning.', t: 'interfere with' }
+    ] },
+
+  { g: 'time', w: 'nowadays', syn: ['today', 'these days', 'recently', 'lately', 'in the modern world'],
+    ex: [
+      { s: 'These days, most students use tablets in class.', t: 'These days' },
+      { s: 'In the modern world, people rely heavily on smartphones.', t: 'In the modern world' },
+      { s: 'Lately, more people have been working from home.', t: 'Lately' }
+    ] }
+];
+
+const KEY = 'synonym1-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(e) {
+  const i = e.s.toLowerCase().indexOf(e.t.toLowerCase());
+  return [e.s.slice(0, i), e.s.slice(i, i + e.t.length), e.s.slice(i + e.t.length)];
+}
+function sentenceMarked(e) { const [a, m, b] = parts(e); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(e) {
+  const [a, , b] = parts(e);
+  const w = Math.min(Math.max(e.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nghĩ ra các từ đồng nghĩa, rồi nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c.ex[0]) + '</p><span class="hint">Từ gốc: ' + esc(c.w) + '. Nhấn để xem đáp án.</span>';
+  const back = chip +
+    '<div class="term">' + esc(c.w) + '</div>' +
+    (c.d ? '<p class="def">' + esc(c.d) + '</p>' : '') +
+    '<ul class="syn" aria-label="Synonyms">' + c.syn.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' +
+    '<div class="exs">' + c.ex.map(e => '<p class="ex">' + sentenceMarked(e) + '</p>').join('') + '</div>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ đồng nghĩa, nhấn để lật" style="--accent:' + ACCENT[c.g] + '">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

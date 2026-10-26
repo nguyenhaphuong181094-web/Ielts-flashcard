@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Technology & Computer Vocabulary: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08142b;
+    --surface: #0f2140;
+    --ink: #e8f0ff;
+    --muted: #9fb2d4;
+    --line: #22406f;
+    --cyan: #5fd4ff;
+    --navy: #08142b;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      linear-gradient(rgba(95, 212, 255, .05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(95, 212, 255, .05) 1px, transparent 1px);
+    background-size: 36px 36px;
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .005em;
+  }
+  .s1 { display: block; color: var(--cyan); font-size: clamp(34px, 10.5vw, 96px); }
+  .s2 {
+    display: inline-block;
+    background: var(--cyan);
+    color: var(--navy);
+    font-size: clamp(22px, 6.6vw, 42px);
+    padding: .1em 1.4em .14em .45em;
+    clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+    margin-top: .18em;
+  }
+  .sub { margin: 14px 0 22px; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--cyan); border-radius: 12px; overflow: hidden; }
+  .seg button {
+    border: 0; background: transparent; color: var(--cyan);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--cyan); color: var(--navy); }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px; max-width: 100%;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--cyan); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--cyan); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 340px;
+    padding: 70px 26px 28px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 16px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--accent); color: var(--navy); }
+  .back { background: var(--surface); border: 2px solid var(--accent); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px; max-width: calc(100% - 44px);
+    font-size: 13px; font-weight: 500; line-height: 1.35;
+    padding: 4px 12px; border-radius: 14px;
+  }
+  .front .chip { background: rgba(8, 20, 43, .16); }
+  .back .chip { background: var(--accent); color: var(--navy); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(34px, 9vw, 52px); line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid var(--navy);
+  }
+  .hint { font-size: 13px; opacity: .75; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(26px, 7vw, 36px); line-height: 1.12;
+    color: var(--accent); overflow-wrap: anywhere;
+  }
+  .def { margin: 0; font-size: 16px; }
+  .ex { margin: 0; padding-left: 14px; border-left: 4px solid var(--accent); font-size: 18px; line-height: 1.55; }
+  mark {
+    background: rgba(255, 255, 255, .2);
+    background: color-mix(in srgb, var(--accent) 32%, transparent);
+    color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600;
+  }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn.no { border-color: var(--cyan); color: var(--cyan); }
+  .btn.yes { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--cyan); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--cyan); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 2px solid var(--cyan); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; color: var(--cyan); }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="s1">TECHNOLOGY</span><span class="s2">&amp; COMPUTER VOCABULARY</span></h1>
+  <p class="sub">Flashcard ôn từ vựng: lật thẻ để xem nghĩa và câu ví dụ bằng tiếng Anh.</p>
+
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  people:  'People & skills in technology',
+  develop: 'Technology development & innovation',
+  devices: 'Devices, machines & features',
+  internet:'Internet use & online activities',
+  learn:   'Online learning',
+  problem: 'Problems, health & dependence',
+  cyber:   'Cybersecurity & online risks',
+  work:    'Technology & work'
+};
+const ACCENT = {
+  people: '#6ec1ff', develop: '#b98aff', devices: '#3fd8f0', internet: '#ffa032',
+  learn: '#4ddc6a', problem: '#ff6b6b', cyber: '#f5e63c', work: '#e66bf2'
+};
+
+const CARDS = [
+  { g: 'people', w: 'computer buff / geek', d: 'A person who is very good at computers and enjoys them.', s: 'My cousin is a real computer buff, so everyone in the family asks him to fix their laptops.', t: 'computer buff' },
+  { g: 'people', w: 'be computer-literate', d: 'To be able to use computers well.', s: 'Nowadays, most office jobs require workers to be computer-literate.', t: 'be computer-literate' },
+  { g: 'people', w: 'technophile', d: 'A person who loves technology and enjoys using new devices.', s: 'As a true technophile, she queues overnight to buy every new smartphone.', t: 'technophile' },
+  { g: 'people', w: 'technophobe', d: 'A person who is afraid of or dislikes technology.', s: 'My grandfather is a technophobe, so he still refuses to use a mobile phone.', t: 'technophobe' },
+
+  { g: 'develop', w: 'computer age / era', d: 'The modern period of history in which computers are used everywhere.', s: 'We are living in the computer age, so children learn to use tablets before they can read.', t: 'computer age' },
+  { g: 'develop', w: 'cutting-edge / state-of-the-art', d: 'Very modern and advanced. Similar: modern, advanced, up-to-date.', s: 'The hospital has just bought a state-of-the-art scanner that gives results in minutes.', t: 'state-of-the-art' },
+  { g: 'develop', w: 'technological breakthrough', d: 'An important new discovery in technology.', s: 'The invention of the microchip was a technological breakthrough that changed the world.', t: 'technological breakthrough' },
+  { g: 'develop', w: 'with the advance / progress of technology', d: 'As technology develops and becomes better over time.', s: 'With the advance of technology, robots can now perform difficult surgeries.', t: 'With the advance of technology' },
+  { g: 'develop', w: 'the widespread use of ...', d: 'When something is used by very many people in many places.', s: 'Experts say the widespread use of smartphones has increased recently, offering many benefits to students.', t: 'the widespread use of' },
+  { g: 'develop', w: 'pave the way for future development', d: 'To make something possible or easier to happen later.', s: 'The invention of the internet paved the way for future development in online education.', t: 'paved the way for future development' },
+
+  { g: 'devices', w: 'miraculous device', d: 'A device so amazing that it seems almost magical.', s: 'The first smartphone seemed like a miraculous device to people who had never used a touch screen.', t: 'miraculous device' },
+  { g: 'devices', w: 'user-friendly interface', d: 'A screen or system that is easy to understand and use.', s: 'This easy phone for seniors has a user-friendly interface with big buttons and clear icons.', t: 'user-friendly interface' },
+  { g: 'devices', w: 'memory storage', d: 'The space in a device where information is kept.', s: 'I deleted old videos because my phone had run out of memory storage.', t: 'memory storage' },
+  { g: 'devices', w: 'portable', d: 'Easy to carry or move from place to place.', s: 'A portable charger is useful when you travel for a long time.', t: 'portable' },
+  { g: 'devices', w: 'sophisticated / complicated devices', d: 'Advanced machines with many complex parts and functions.', s: 'Sophisticated devices such as drones need careful training before you can use them.', t: 'Sophisticated devices' },
+  { g: 'devices', w: 'labour-saving appliances', d: 'Machines that reduce the work people have to do, such as washing machines.', s: 'Labour-saving appliances like robot vacuums give parents more free time.', t: 'Labour-saving appliances' },
+  { g: 'devices', w: 'well-oiled machine', d: 'Something that works smoothly and well, even though it may be old.', s: 'Although the printer is ten years old, it is still a well-oiled machine.', t: 'well-oiled machine' },
+
+  { g: 'internet', w: 'go online / access the internet', d: 'To connect to the internet and use it.', s: 'I go online every evening to watch videos and chat with friends.', t: 'go online' },
+  { g: 'internet', w: 'browse websites / surf', d: 'To look at different web pages, often without a fixed plan.', s: 'He likes to browse websites for cheap flights before planning a holiday.', t: 'browse websites' },
+  { g: 'internet', w: 'use a search engine', d: 'To type words into a tool such as Google to find information online.', s: 'Students often use a search engine to find information for their homework.', t: 'use a search engine' },
+  { g: 'internet', w: 'bookmark a webpage', d: 'To save a webpage address so you can open it quickly later.', s: 'I always bookmark a webpage when it has useful study tips.', t: 'bookmark a webpage' },
+  { g: 'internet', w: 'be glued to the phone screen', d: 'To spend so much time looking at a phone that you pay no attention to anything else.', s: 'At dinner, my brother was glued to his phone screen and did not say a word.', t: 'glued to his phone screen' },
+  { g: 'internet', w: 'be engrossed in social media / games', d: 'To be so interested in something that you forget everything around you.', s: 'Many teenagers are engrossed in social media for hours every day.', t: 'engrossed in social media' },
+
+  { g: 'learn', w: 'do online learning', d: 'To study through the internet instead of in a classroom.', s: 'During the storm, all students had to do online learning from home.', t: 'do online learning' },
+  { g: 'learn', w: 'do distance learning', d: 'To study from far away, without going to school, usually with the help of technology.', s: 'She does distance learning because her village is far from the nearest university.', t: 'does distance learning' },
+  { g: 'learn', w: 'attend virtual classes', d: 'To join lessons that take place on the internet.', s: 'Students can attend virtual classes from anywhere with a stable internet connection.', t: 'attend virtual classes' },
+
+  { g: 'problem', w: 'computer fatigue', d: 'A feeling of tiredness, often with eye or head pain, caused by working on computers for too long. It often affects IT specialists.', s: 'Many IT specialists suffer from computer fatigue after staring at screens all day.', t: 'computer fatigue' },
+  { g: 'problem', w: 'become over-reliant on technology', d: 'To depend on technology too much.', s: 'If we become over-reliant on technology, we may forget how to do simple tasks ourselves.', t: 'become over-reliant on technology' },
+  { g: 'problem', w: 'crash / crash down', d: 'When a computer or system suddenly stops working. Crash is the more common form.', s: 'My laptop crashed in the middle of the online exam.', t: 'crashed' },
+
+  { g: 'cyber', w: 'cybercriminals', d: 'People who commit crimes using computers or the internet.', s: 'Cybercriminals often steal passwords by sending fake messages.', t: 'Cybercriminals' },
+  { g: 'cyber', w: 'risk / threat of identity theft', d: 'The danger that someone will steal your personal information and pretend to be you.', s: 'Sharing your ID number online increases the risk of identity theft.', t: 'risk of identity theft' },
+  { g: 'cyber', w: 'cyberbullying', d: 'Using the internet or phones to hurt, frighten, or embarrass another person.', s: 'Schools should teach students how to report cyberbullying on social media.', t: 'cyberbullying' },
+  { g: 'cyber', w: 'internet security / online safety', d: 'Ways to protect your information and yourself when you use the internet.', s: 'Good internet security starts with strong passwords and regular software updates.', t: 'internet security' },
+  { g: 'cyber', w: 'email fraud / call fraud', d: 'A crime in which criminals trick people by email or phone in order to steal money.', s: 'Email fraud and call fraud are increasing, so never share your bank details with strangers.', t: 'Email fraud and call fraud' },
+  { g: 'cyber', w: 'netiquette', d: 'Proper and polite behavior when you communicate online.', s: 'Good netiquette means being polite and never typing in capital letters to shout at people.', t: 'netiquette' },
+
+  { g: 'work', w: 'optimize (v.)', d: 'To make something work as well or as efficiently as possible.', s: 'The company uses new software to optimize its delivery routes.', t: 'optimize' },
+  { g: 'work', w: 'function (n./v.)', d: 'As a noun: the purpose of something. As a verb: to work in the correct way.', s: 'The main function of this app is to translate speech into text.', t: 'function' },
+  { g: 'work', w: 'help with domestic tasks', d: 'To do or support housework such as cleaning and cooking.', s: 'A robot vacuum can help with domestic tasks and save time for busy families.', t: 'help with domestic tasks' },
+  { g: 'work', w: 'be replaced by automation', d: 'To lose a job or role because machines do it instead of people.', s: 'Many factory workers fear that their jobs will be replaced by automation.', t: 'replaced by automation' },
+  { g: 'work', w: 'be superseded by', d: 'To be replaced by something newer or better.', s: 'Film cameras have been superseded by digital cameras.', t: 'superseded by' }
+];
+
+const KEY = 'tech-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(c) {
+  const i = c.s.toLowerCase().indexOf(c.t.toLowerCase());
+  return [c.s.slice(0, i), c.s.slice(i, i + c.t.length), c.s.slice(i + c.t.length)];
+}
+function sentenceMarked(c) { const [a, m, b] = parts(c); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(c) {
+  const [a, , b] = parts(c);
+  const w = Math.min(Math.max(c.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c) + '</p><span class="hint">Nhấn để xem đáp án</span>';
+  const back = chip + '<div class="term">' + esc(c.w) + '</div><p class="def">' + esc(c.d) + '</p><p class="ex">' + sentenceMarked(c) + '</p>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ vựng, nhấn để lật" style="--accent:' + ACCENT[c.g] + '">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

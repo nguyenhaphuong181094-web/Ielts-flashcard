@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Sports = Exercise: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f8f4;
+    --surface: #ffffff;
+    --ink: #10251a;
+    --muted: #4b6355;
+    --line: #cfe0d3;
+    --green: #0d6b30;
+    --green-text: #0d6b30;
+    --mark: #cdeeb4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0c1710;
+      --surface: #142219;
+      --ink: #e6f0e8;
+      --muted: #9db5a4;
+      --line: #26402f;
+      --green: #167a3a;
+      --green-text: #4cc27a;
+      --mark: #2f5d2e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c1710;
+    --surface: #142219;
+    --ink: #e6f0e8;
+    --muted: #9db5a4;
+    --line: #26402f;
+    --green: #167a3a;
+    --green-text: #4cc27a;
+    --mark: #2f5d2e;
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .005em;
+  }
+  .s1 { display: block; color: var(--green-text); font-size: clamp(72px, 22vw, 132px); }
+  .s2 {
+    display: inline-block;
+    background: var(--green);
+    color: #fff;
+    font-size: clamp(36px, 11vw, 68px);
+    padding: .06em 1.1em .1em .35em;
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+    margin-top: .1em;
+  }
+  .sub { margin: 14px 0 22px; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--green); border-radius: 12px; overflow: hidden; }
+  .seg button {
+    border: 0; background: transparent; color: var(--green-text);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--green); color: #fff; }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--green-text); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--green); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--green-text); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 330px;
+    padding: 58px 26px 28px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 16px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--green); color: #fff; }
+  .back { background: var(--surface); border: 2px solid var(--green); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px;
+    font-size: 13px; font-weight: 500; padding: 3px 12px; border-radius: 99px;
+  }
+  .front .chip { background: rgba(255, 255, 255, .2); }
+  .back .chip { background: var(--mark); color: var(--ink); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(38px, 10vw, 56px); line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid rgba(255, 255, 255, .9);
+  }
+  .hint { font-size: 13px; opacity: .8; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(28px, 7vw, 38px); line-height: 1.1;
+    color: var(--green-text); overflow-wrap: anywhere;
+  }
+  .def { margin: 0; font-size: 16px; }
+  .ex { margin: 0; padding-left: 14px; border-left: 4px solid var(--green); font-size: 18px; line-height: 1.55; }
+  mark { background: var(--mark); color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600; }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.no { border-color: var(--green); color: var(--green-text); }
+  .btn.yes { background: var(--green); border-color: var(--green); color: #fff; }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--green); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--green-text); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 2px solid var(--green); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; color: var(--green-text); }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="s1">SPORTS</span><span class="s2">= EXERCISE</span></h1>
+  <p class="sub">Flashcard ôn từ vựng: lật thẻ để xem nghĩa và câu ví dụ bằng tiếng Anh.</p>
+
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  start: 'Get started',
+  build: 'Build a stronger you',
+  boost: 'Boost & improve',
+  types: 'Types of sports',
+  safe: 'Sensible precautions',
+  phys: 'Benefits: physically',
+  ment: 'Benefits: mentally'
+};
+
+const CARDS = [
+  { g: 'start', w: 'take up a sport', d: 'To begin a new sport and keep doing it. Similar: begin, start.', s: 'My brother took up tennis last summer, and now he plays every weekend.', t: 'took up' },
+  { g: 'start', w: 'work out', d: 'To do exercise. The noun is workout: a session of exercise.', s: 'I usually work out at the gym for an hour after work.', t: 'work out' },
+
+  { g: 'build', w: 'lose weight / get lean', d: 'To reduce your body weight and body fat. Similar: get into shape.', s: 'Many people join a gym to lose weight and get lean.', t: 'lose weight' },
+  { g: 'build', w: 'stay in shape', d: 'To stay lean and healthy through regular exercise. Similar: keep fit, stay lean.', s: 'My grandfather stays in shape by walking five kilometers every morning.', t: 'stays in shape' },
+  { g: 'build', w: 'chiseled physique', d: 'A lean, muscular body with clearly visible muscles.', s: 'The actor trained six days a week to maintain his chiseled physique.', t: 'maintain his chiseled physique' },
+  { g: 'build', w: 'be in good physical condition', d: 'To be healthy and fit.', s: 'Only players who are in good physical condition can join the mountain race.', t: 'in good physical condition' },
+  { g: 'build', w: 'be at the peak of condition', d: 'To be in the best possible physical shape.', s: 'The swimmer was at the peak of her condition on the day of the final.', t: 'at the peak of her condition' },
+  { g: 'build', w: 'be out of condition', d: 'To be weak and unfit because you have not exercised.', s: 'He was so out of condition that he could not climb the stairs without stopping.', t: 'out of condition' },
+  { g: 'build', w: 'fail to work out on a regular basis', d: 'To not exercise often enough.', s: 'People who fail to work out on a regular basis often lose their strength and energy.', t: 'fail to work out on a regular basis' },
+
+  { g: 'boost', w: 'boost stamina level', d: 'To increase the physical energy that lets you keep going for a long time.', s: 'Swimming every morning helped him boost his stamina level for the football season.', t: 'boost his stamina level' },
+  { g: 'boost', w: 'enhance endurance and cognitive ability', d: 'Endurance is the ability to continue an activity for a long time. Cognitive ability is the ability to think, learn, and remember.', s: 'Regular jogging can enhance endurance and cognitive ability at the same time.', t: 'enhance endurance and cognitive ability' },
+  { g: 'boost', w: 'boost the immune system', d: 'To help your body fight germs and illness.', s: 'Moderate exercise and enough sleep can boost your immune system during the flu season.', t: 'boost your immune system' },
+  { g: 'boost', w: 'good for the respiratory system', d: 'Helps your lungs and breathing work well.', s: 'Swimming is good for the respiratory system because you must control your breathing.', t: 'good for the respiratory system' },
+
+  { g: 'types', w: 'individual sports / team sports', d: 'Individual sports are played alone. Team sports are played in groups.', s: 'Some people prefer individual sports like swimming, but I enjoy team sports such as basketball.', t: 'individual sports' },
+  { g: 'types', w: 'gentle exercise / strenuous exercise', d: 'Gentle exercise is light and easy. Strenuous exercise is physically demanding.', s: 'My doctor advised me to take gentle exercise, so I gave up strenuous workouts.', t: 'gentle exercise' },
+  { g: 'types', w: 'hit the gym', d: 'To go to the gym and train hard.', s: 'She hits the gym three times a week before work.', t: 'hits the gym' },
+  { g: 'types', w: 'extreme sports', d: 'Dangerous sports with a high risk of injury, such as skydiving.', s: 'Extreme sports like rock climbing are exciting, but they can be dangerous without proper training.', t: 'Extreme sports' },
+  { g: 'types', w: 'outlaw', d: 'To ban something; to make it illegal.', s: 'The city decided to outlaw skateboarding in the crowded square after several people were injured.', t: 'outlaw' },
+
+  { g: 'safe', w: 'take sensible precautions', d: 'To do reasonable things to stay safe.', s: 'Before she went snowboarding, she took sensible precautions and learned the safety rules.', t: 'took sensible precautions' },
+  { g: 'safe', w: 'equip essential sport gear', d: 'To get the basic equipment you need for a sport, such as a helmet.', s: 'Beginners should equip essential sport gear, such as a helmet and gloves.', t: 'equip essential sport gear' },
+  { g: 'safe', w: 'buy life insurance', d: 'To pay for a plan that gives money to your family if you die or are seriously hurt.', s: 'Many extreme sports fans buy life insurance in case of a serious accident.', t: 'buy life insurance' },
+
+
+  { g: 'phys', w: 'improve cardiovascular health', d: 'To make your heart and blood vessels healthier.', s: 'Swimming and cycling improve cardiovascular health by making the heart stronger.', t: 'improve cardiovascular health' },
+  { g: 'phys', w: 'promote weight management', d: 'To help you control your weight in a healthy way.', s: 'Regular exercise promotes weight management, so she no longer worries about gaining weight.', t: 'promotes weight management' },
+  { g: 'phys', w: 'burn calories / increase metabolic rate', d: 'To use up energy from food and speed up how fast your body turns food into energy.', s: 'Strength training helps burn calories and increase your metabolic rate.', t: 'burn calories and increase your metabolic rate' },
+  { g: 'phys', w: 'enhance muscle strength', d: 'To make your muscles stronger and more powerful.', s: 'Lifting weights twice a week enhances muscle strength.', t: 'enhances muscle strength' },
+  { g: 'phys', w: 'flexibility', d: 'The ability to bend and stretch your body easily.', s: 'Stretching every morning improves flexibility and helps prevent muscle pain.', t: 'flexibility' },
+  { g: 'phys', w: 'endurance', d: 'The ability to keep doing an activity for a long time without getting too tired.', s: 'Long-distance running builds endurance, so I can now jog for an hour without stopping.', t: 'endurance' },
+  { g: 'phys', w: 'reduce the risk of chronic conditions', d: 'To make serious long-term health problems less likely. Chronic conditions are health problems that last for a long time.', s: 'Regular exercise reduces the risk of chronic conditions such as obesity and heart disease.', t: 'reduces the risk of chronic conditions' },
+  { g: 'phys', w: 'obesity', d: 'A health problem in which a person has too much body fat.', s: 'Regular exercise and a balanced diet can help prevent obesity.', t: 'obesity' },
+  { g: 'phys', w: 'diabetes', d: 'A long-term illness in which the body cannot control the level of sugar in the blood.', s: 'Walking for twenty minutes after meals can lower the risk of diabetes.', t: 'diabetes' },
+  { g: 'phys', w: 'cardiovascular diseases', d: 'Illnesses of the heart and blood vessels, such as heart attacks and strokes.', s: 'Exercise reduces the risk of cardiovascular diseases such as heart attacks and strokes.', t: 'cardiovascular diseases' },
+
+  { g: 'ment', w: 'stimulate the release of endorphins', d: 'Endorphins are natural chemicals in the brain that reduce pain and improve your mood.', s: 'A thirty-minute run stimulates the release of endorphins, so I feel cheerful after training.', t: 'stimulates the release of endorphins' },
+  { g: 'ment', w: 'elevate mood', d: 'To make you feel happier and more positive.', s: 'A quick game of badminton can elevate your mood after a hard day.', t: 'elevate your mood' },
+  { g: 'ment', w: 'reduce stress and anxiety', d: 'To make you feel less worried and more relaxed.', s: 'A short walk after class can reduce stress and anxiety.', t: 'reduce stress and anxiety' },
+  { g: 'ment', w: 'anxiety', d: 'A strong feeling of worry or fear about something that might happen.', s: 'She started swimming to cope with her anxiety before big exams.', t: 'anxiety' },
+  { g: 'ment', w: 'be associated with improved sleep quality', d: 'Be associated with means to be connected to something. Sleep quality is how well you sleep at night.', s: 'Studies show that regular exercise is associated with improved sleep quality.', t: 'associated with improved sleep quality' },
+  { g: 'ment', w: 'increase energy levels', d: 'To make you feel more active and less tired.', s: 'Morning exercise can increase your energy levels for the whole day.', t: 'increase your energy levels' },
+  { g: 'ment', w: 'enhance cognitive function', d: 'To improve how well your brain thinks, remembers, focuses, and solves problems.', s: 'Regular exercise enhances cognitive function, so students can concentrate better.', t: 'enhances cognitive function' }
+];
+
+const KEY = 'sports-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(c) {
+  const i = c.s.toLowerCase().indexOf(c.t.toLowerCase());
+  return [c.s.slice(0, i), c.s.slice(i, i + c.t.length), c.s.slice(i + c.t.length)];
+}
+function sentenceMarked(c) { const [a, m, b] = parts(c); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(c) {
+  const [a, , b] = parts(c);
+  const w = Math.min(Math.max(c.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c) + '</p><span class="hint">Nhấn để xem đáp án</span>';
+  const back = chip + '<div class="term">' + esc(c.w) + '</div><p class="def">' + esc(c.d) + '</p><p class="ex">' + sentenceMarked(c) + '</p>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ vựng, nhấn để lật">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

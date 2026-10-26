@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Weather Vocabulary List: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf0d9;
+    --surface: #fffaf0;
+    --ink: #4a2a12;
+    --muted: #7a5a3a;
+    --line: #e2cfa4;
+    --brand: #b9500f;
+    --brand-deep: #a94a12;
+    --cream: #fffaf0;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .005em;
+  }
+  .s1 { display: block; color: var(--brand-deep); font-size: clamp(38px, 11vw, 88px); }
+  .s2 {
+    display: inline-block;
+    background: var(--brand);
+    color: var(--cream);
+    font-size: clamp(24px, 7.5vw, 48px);
+    padding: .08em 1.2em .12em .4em;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+    margin-top: .16em;
+  }
+  .sub { margin: 14px 0 22px; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--brand); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .seg button {
+    border: 0; background: transparent; color: var(--brand);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--brand); color: var(--cream); }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px; max-width: 100%;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--brand); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--brand); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 340px;
+    padding: 66px 24px 26px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--accent); color: var(--cream); }
+  .back { background: var(--surface); border: 3px solid var(--accent); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px; max-width: calc(100% - 44px);
+    font-size: 13px; font-weight: 600; line-height: 1.35;
+    padding: 4px 12px; border-radius: 14px; color: var(--cream);
+  }
+  .front .chip { background: rgba(255, 255, 255, .2); }
+  .back .chip { background: var(--accent); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(34px, 9.5vw, 54px); line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid var(--cream);
+  }
+  .hint { font-size: 14px; opacity: .9; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(28px, 7.5vw, 38px); line-height: 1.12;
+    color: var(--accent); overflow-wrap: anywhere;
+  }
+  .def { margin: 0; font-size: 16px; }
+  .syn { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .syn li {
+    font-size: 15px; font-weight: 500; padding: 4px 12px; border-radius: 999px;
+    background: #f0e9cf;
+    background: color-mix(in srgb, var(--accent) 14%, #fff);
+    border: 2px solid var(--accent);
+  }
+  .exs { display: flex; flex-direction: column; gap: 10px; }
+  .ex { margin: 0; padding-left: 12px; border-left: 4px solid var(--accent); font-size: 17px; line-height: 1.5; }
+  mark {
+    background: #e6dcae;
+    background: color-mix(in srgb, var(--accent) 24%, #fff);
+    color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600;
+  }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.no { border-color: var(--brand); color: var(--brand); }
+  .btn.yes { background: var(--brand); border-color: var(--brand); color: var(--cream); }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--brand); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--brand); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 3px solid var(--brand); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; color: var(--brand); }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="s1">WEATHER VOCABULARY LIST</span><span class="s2">IELTS WRITING</span></h1>
+  <p class="sub">Flashcard ôn từ vựng chủ đề thời tiết (IELTS Writing): lật thẻ để xem nghĩa và câu ví dụ bằng tiếng Anh.</p>
+
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  hot:     'Hot weather',
+  change:  'Changeable weather',
+  sunny:   'Sunny weather',
+  cloudy:  'Cloudy weather',
+  rain:    'Rainy weather',
+  extreme: 'Extreme weather & consequences'
+};
+const ACCENT = {
+  hot: '#b8471a', change: '#4b5f9e', sunny: '#9a5d00', cloudy: '#4f6470', rain: '#1f6a8f', extreme: '#7a2230'
+};
+
+/* w = term, d = meaning, also = related forms, ex = examples (t = the term as it appears in the sentence) */
+const CARDS = [
+  { g: 'hot', w: 'stuffy', d: 'Uncomfortably warm, with little fresh air.',
+    ex: [
+      { s: 'The classroom felt stuffy because the windows were closed on a hot afternoon.', t: 'stuffy' },
+      { s: 'It was so stuffy on the crowded bus that many passengers felt dizzy.', t: 'stuffy' }
+    ] },
+  { g: 'hot', w: 'heat wave', d: 'A period of unusually hot weather that lasts for several days or weeks.', also: ['heat waves'],
+    ex: [
+      { s: 'During the heat wave, temperatures stayed above 40 degrees for a week.', t: 'heat wave' },
+      { s: 'Heat waves are becoming more frequent in many parts of the world.', t: 'Heat waves' }
+    ] },
+  { g: 'hot', w: 'have heatstroke', d: 'To become seriously ill because your body gets too hot.',
+    ex: [{ s: 'Several runners had heatstroke after the marathon in the midday sun.', t: 'had heatstroke' }] },
+  { g: 'hot', w: 'cool down / cool off', d: 'To become less hot, or to make yourself less hot.',
+    ex: [
+      { s: 'After the football match, the boys jumped into the river to cool off.', t: 'cool off' },
+      { s: 'Drink some water and sit in the shade to cool down.', t: 'cool down' }
+    ] },
+  { g: 'hot', w: 'stay in an air-conditioned room / place', d: 'To remain indoors where machines keep the air cool.',
+    ex: [
+      { s: 'When it is boiling outside, I prefer to stay in an air-conditioned room.', t: 'stay in an air-conditioned room' },
+      { s: 'During the heat wave, elderly people are advised to stay in air-conditioned places.', t: 'stay in air-conditioned places' }
+    ] },
+  { g: 'hot', w: 'wear protective clothing / layers', d: 'To wear clothes that protect you from the sun or the cold. Layers are several thin pieces of clothing worn on top of each other.',
+    ex: [
+      { s: 'Farmers wear protective clothing and wide hats to avoid sunburn.', t: 'wear protective clothing' },
+      { s: 'In changeable weather, it is wise to wear layers so you can add or remove clothes.', t: 'wear layers' }
+    ] },
+  { g: 'hot', w: 'stay hydrated', d: 'To drink enough water so that your body does not become too dry.',
+    ex: [{ s: 'Athletes must stay hydrated during long races in hot weather.', t: 'stay hydrated' }] },
+
+  { g: 'change', w: 'a sudden change in the weather', d: 'When the weather quickly becomes very different.',
+    ex: [
+      { s: 'A sudden change in the weather ruined our plans for a picnic.', t: 'A sudden change in the weather' },
+      { s: 'Hikers should prepare for a sudden change in the weather in the mountains.', t: 'a sudden change in the weather' }
+    ] },
+  { g: 'change', w: 'changeable (adj.)', d: 'Often changing, and difficult to predict.',
+    ex: [
+      { s: 'The weather in spring is changeable, so always carry an umbrella.', t: 'changeable' },
+      { s: 'Changeable weather makes it hard for farmers to plan their work.', t: 'Changeable weather' }
+    ] },
+
+  { g: 'sunny', w: 'sunny spells', d: 'Short periods of sunshine between clouds.',
+    ex: [{ s: 'Tomorrow will be cloudy with sunny spells in the afternoon.', t: 'sunny spells' }] },
+  { g: 'sunny', w: 'clear blue skies', d: 'A sky with no clouds.',
+    ex: [{ s: 'We enjoyed clear blue skies throughout our holiday on the coast.', t: 'clear blue skies' }] },
+  { g: 'sunny', w: 'mild day / mild weather', d: 'Pleasantly warm; neither too hot nor too cold.',
+    ex: [
+      { s: 'Autumn is my favorite season because of the mild weather.', t: 'mild weather' },
+      { s: 'It was a mild day in December, so we walked without coats.', t: 'mild day' }
+    ] },
+
+  { g: 'cloudy', w: 'overcast day', d: 'A day when the sky is completely covered with grey clouds.',
+    ex: [{ s: 'It was an overcast day, so we could not see the mountains.', t: 'overcast day' }] },
+  { g: 'cloudy', w: 'gloomy day', d: 'A dark, dull day that can make people feel sad.',
+    ex: [{ s: 'Gloomy days in winter can make people feel tired and low.', t: 'Gloomy days' }] },
+
+  { g: 'rain', w: 'drizzle (v./n.)', d: 'To rain lightly with very small drops. As a noun: light rain.',
+    ex: [
+      { s: 'It was only drizzling, so we did not need an umbrella.', t: 'drizzling' },
+      { s: 'A light drizzle fell on the city all morning.', t: 'drizzle' }
+    ] },
+  { g: 'rain', w: 'pour / be pouring (v.)', d: 'To rain very heavily.',
+    ex: [
+      { s: 'It was pouring, so the match was cancelled.', t: 'pouring' },
+      { s: 'Rain poured down all night, and the streets became rivers.', t: 'poured down' }
+    ] },
+  { g: 'rain', w: 'shower (n./v.)', d: 'A short period of rain. Showers are rain that starts and stops.',
+    ex: [
+      { s: 'Expect heavy showers in the north this evening.', t: 'showers' },
+      { s: 'It showered briefly in the afternoon, then the sun came out.', t: 'showered' }
+    ] },
+  { g: 'rain', w: 'torrential rain (n.)', d: 'Very heavy rain that falls quickly and in large amounts.',
+    ex: [
+      { s: 'Torrential rain caused landslides in the mountain villages.', t: 'Torrential rain' },
+      { s: 'The torrential rain flooded the main street within an hour.', t: 'torrential rain' }
+    ] },
+  { g: 'rain', w: 'get soaked / get drenched', d: 'To become completely wet.',
+    ex: [
+      { s: 'We forgot our umbrellas and got soaked on the way home.', t: 'got soaked' },
+      { s: 'The players got drenched during the storm.', t: 'got drenched' }
+    ] },
+  { g: 'rain', w: 'get caught in the rain', d: 'To be outside when it starts to rain and have no shelter.',
+    ex: [{ s: 'I got caught in the rain on my way to school.', t: 'got caught in the rain' }] },
+
+  { g: 'extreme', w: 'extreme weather events', d: 'Very severe weather conditions, such as storms, floods, and droughts.',
+    ex: [
+      { s: 'Extreme weather events are becoming more common because of climate change.', t: 'Extreme weather events' },
+      { s: 'Governments must prepare for extreme weather events such as typhoons and heat waves.', t: 'extreme weather events' }
+    ] },
+  { g: 'extreme', w: 'widespread flooding', d: 'Floods that affect large areas.',
+    ex: [
+      { s: 'Widespread flooding forced thousands of families to leave their homes.', t: 'Widespread flooding' },
+      { s: 'Heavy rain led to widespread flooding across the region.', t: 'widespread flooding' }
+    ] },
+  { g: 'extreme', w: 'infrastructure damage', d: 'Harm to roads, buildings, and power systems.',
+    ex: [{ s: 'The typhoon caused serious infrastructure damage, including broken bridges and power lines.', t: 'infrastructure damage' }] }
+];
+
+const KEY = 'weather-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(e) {
+  const i = e.s.toLowerCase().indexOf(e.t.toLowerCase());
+  return [e.s.slice(0, i), e.s.slice(i, i + e.t.length), e.s.slice(i + e.t.length)];
+}
+function sentenceMarked(e) { const [a, m, b] = parts(e); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(e) {
+  const [a, , b] = parts(e);
+  const w = Math.min(Math.max(e.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c.ex[0]) + '</p><span class="hint">Gợi ý: ' + esc(c.d) + ' Nhấn để xem đáp án.</span>';
+  const back = chip +
+    '<div class="term">' + esc(c.w) + '</div>' +
+    '<p class="def">' + esc(c.d) + '</p>' +
+    (c.also ? '<ul class="syn">' + c.also.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '') +
+    '<div class="exs">' + c.ex.map(e => '<p class="ex">' + sentenceMarked(e) + '</p>').join('') + '</div>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ vựng, nhấn để lật" style="--accent:' + ACCENT[c.g] + '">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

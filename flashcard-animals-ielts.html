@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>IELTS Wild Animals Vocabulary: Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f1e4;
+    --surface: #fffdf6;
+    --ink: #1c2a1c;
+    --muted: #55634f;
+    --line: #d8d2bd;
+    --green: #1e5b22;
+    --green-deep: #14401a;
+    --cream: #fbf7ea;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  h1 {
+    margin: 0;
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .005em;
+  }
+  .s1 { display: block; color: var(--green-deep); font-size: clamp(44px, 13vw, 100px); }
+  .s2 {
+    display: inline-block;
+    background: var(--green);
+    color: var(--cream);
+    font-size: clamp(28px, 8.5vw, 60px);
+    padding: .08em 1.2em .12em .4em;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+    margin-top: .16em;
+  }
+  .sub { margin: 14px 0 22px; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 2px solid var(--green); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .seg button {
+    border: 0; background: transparent; color: var(--green);
+    font: inherit; font-size: 14px; font-weight: 500;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--green); color: var(--cream); }
+  select {
+    font: inherit; font-size: 14px; padding: 9px 12px; max-width: 100%;
+    border: 2px solid var(--line); border-radius: 12px;
+    background: var(--surface); color: var(--ink);
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--green); outline-offset: 2px;
+  }
+
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); margin: 8px 0 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--green); transition: width .3s; }
+
+  .scene { perspective: 1400px; }
+  .card { cursor: pointer; border-radius: 20px; outline: none; -webkit-tap-highlight-color: transparent; }
+  .card:focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+  .inner { display: grid; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .3, 1); }
+  .card.flipped .inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 340px;
+    padding: 66px 24px 26px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { background: var(--accent); color: var(--cream); }
+  .back { background: var(--surface); border: 3px solid var(--accent); transform: rotateY(180deg); }
+  .chip {
+    position: absolute; top: 18px; left: 22px; max-width: calc(100% - 44px);
+    font-size: 13px; font-weight: 600; line-height: 1.35;
+    padding: 4px 12px; border-radius: 14px; color: var(--cream);
+  }
+  .front .chip { background: rgba(255, 255, 255, .2); }
+  .back .chip { background: var(--accent); }
+
+  .word {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(34px, 9.5vw, 54px); line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .cloze { margin: 0; font-size: clamp(20px, 5vw, 26px); line-height: 1.55; font-weight: 500; }
+  .blank {
+    display: inline-block; height: 1em; vertical-align: -.1em; margin: 0 .15em;
+    border-bottom: 3px solid var(--cream);
+  }
+  .hint { font-size: 14px; opacity: .9; }
+
+  .term {
+    font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    font-weight: 600; font-size: clamp(28px, 7.5vw, 38px); line-height: 1.12;
+    color: var(--accent); overflow-wrap: anywhere;
+  }
+  .def { margin: 0; font-size: 16px; }
+  .syn { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .syn li {
+    font-size: 15px; font-weight: 500; padding: 4px 12px; border-radius: 999px;
+    background: #f0e9cf;
+    background: color-mix(in srgb, var(--accent) 14%, #fff);
+    border: 2px solid var(--accent);
+  }
+  .exs { display: flex; flex-direction: column; gap: 10px; }
+  .ex { margin: 0; padding-left: 12px; border-left: 4px solid var(--accent); font-size: 17px; line-height: 1.5; }
+  mark {
+    background: #e6dcae;
+    background: color-mix(in srgb, var(--accent) 24%, #fff);
+    color: var(--ink); padding: 0 .15em; border-radius: 4px; font-weight: 600;
+  }
+
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    border-radius: 12px; padding: 12px 10px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.no { border-color: var(--green); color: var(--green); }
+  .btn.yes { background: var(--green); border-color: var(--green); color: var(--cream); }
+  @media (max-width: 520px) {
+    .actions { grid-template-columns: 1fr 1fr; }
+    .no { order: 1; } .yes { order: 2; } .prev { order: 3; } .next { order: 4; }
+  }
+
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; font-size: 14px; }
+  .foot label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .foot input { width: 18px; height: 18px; accent-color: var(--green); }
+  .link { background: none; border: 0; padding: 4px 0; font: inherit; color: var(--green); text-decoration: underline; cursor: pointer; }
+  .keys { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+  .panel { border: 3px solid var(--green); border-radius: 20px; padding: 32px 26px; background: var(--surface); }
+  .panel h2 { margin: 0 0 8px; font-family: 'Oswald', 'Arial Narrow', Impact, sans-serif; font-weight: 600; font-size: 36px; color: var(--green); }
+  .panel p { margin: 0 0 18px; font-size: 17px; }
+  .panel .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .panel .btn { padding: 12px 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner, .bar > i { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="s1">IELTS WILD ANIMALS</span><span class="s2">VOCABULARY</span></h1>
+  <p class="sub">Flashcard ôn từ vựng IELTS về động vật hoang dã: lật thẻ để xem nghĩa và câu ví dụ bằng tiếng Anh.</p>
+
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="Kiểu thẻ">
+      <button type="button" id="modeWord" aria-pressed="true">Xem từ trước</button>
+      <button type="button" id="modeCloze" aria-pressed="false">Điền từ vào câu</button>
+    </div>
+    <select id="group" aria-label="Chọn chủ đề"></select>
+  </div>
+
+  <div class="meta"><span id="pos"></span><span id="knownTxt"></span></div>
+  <div class="bar" role="progressbar" aria-label="Tiến độ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+
+  <div class="scene" id="stage"></div>
+
+  <div class="actions">
+    <button type="button" class="btn prev" id="prev">Trước</button>
+    <button type="button" class="btn no" id="no">Chưa nhớ</button>
+    <button type="button" class="btn yes" id="yes">Đã nhớ</button>
+    <button type="button" class="btn next" id="next">Sau</button>
+  </div>
+
+  <div class="foot">
+    <button type="button" class="link" id="shuffle">Xáo trộn thẻ</button>
+    <label><input type="checkbox" id="onlyUnknown"> Chỉ ôn thẻ chưa nhớ</label>
+    <button type="button" class="link" id="reset">Xóa tiến độ</button>
+  </div>
+  <p class="keys">Phím tắt: Space hoặc Enter để lật thẻ, mũi tên trái và phải để chuyển thẻ.</p>
+</div>
+
+<script>
+const GROUPS = {
+  hab:    'Classification: by habitat',
+  life:   'Classification: by lifestyle',
+  diet:   'Classification: by diet',
+  bio:    'Classification: by biological type',
+  human:  'Classification: relationship with humans',
+  status: 'Conservation status',
+  threat: 'Threats to wildlife',
+  cons:   'Wildlife conservation',
+  adj:    'Useful adjectives',
+  phrase: 'High-scoring IELTS phrases',
+  sol:    'Solutions'
+};
+const ACCENT = {
+  hab: '#2f6f2f', life: '#7a4b14', diet: '#556b1f', bio: '#1f6672', human: '#4d5a8a',
+  status: '#7a3560', threat: '#8b1a1a', cons: '#1b6b45', adj: '#5b3a86', phrase: '#a8440c', sol: '#1f4e8c'
+};
+
+/* w = term, d = meaning, also = related forms, ex = examples (t = the term as it appears in the sentence) */
+const CARDS = [
+  { g: 'hab', w: 'terrestrial creatures', d: 'Animals that live on land.', also: ['land animals'],
+    ex: [{ s: 'Lions and elephants are terrestrial creatures that roam the African savanna.', t: 'terrestrial creatures' }] },
+  { g: 'hab', w: 'marine creatures', d: 'Animals that live in the sea or ocean.', also: ['sea animals'],
+    ex: [{ s: 'Coral reefs provide a home for thousands of marine creatures.', t: 'marine creatures' }] },
+  { g: 'hab', w: 'amphibians', d: 'Animals such as frogs that can live both in water and on land.',
+    ex: [{ s: 'Amphibians are very sensitive to pollution, so they are a warning sign of an unhealthy environment.', t: 'Amphibians' }] },
+
+  { g: 'life', w: 'nocturnal animals', d: 'Animals that are active at night.',
+    ex: [
+      { s: 'Many nocturnal animals rely on heightened senses to hunt at night.', t: 'nocturnal animals' },
+      { s: 'Bats and owls are nocturnal animals that sleep during the day.', t: 'nocturnal animals' }
+    ] },
+  { g: 'life', w: 'diurnal animals', d: 'Animals that are active during the day.',
+    ex: [{ s: 'Squirrels and butterflies are diurnal animals that search for food in the daytime.', t: 'diurnal animals' }] },
+  { g: 'life', w: 'social animals', d: 'Animals that live in groups, such as herds.', also: ['live in herds'],
+    ex: [{ s: 'Elephants are social animals that live in close family herds.', t: 'social animals' }] },
+  { g: 'life', w: 'solitary animals', d: 'Animals that live alone.',
+    ex: [{ s: 'Tigers are solitary animals that usually hunt alone.', t: 'solitary animals' }] },
+
+  { g: 'diet', w: 'carnivores', d: 'Animals that eat meat.',
+    ex: [{ s: 'Wolves are carnivores that hunt in packs.', t: 'carnivores' }] },
+  { g: 'diet', w: 'herbivores', d: 'Animals that eat only plants.',
+    ex: [
+      { s: 'Herbivores play an essential role in maintaining ecological balance.', t: 'Herbivores' },
+      { s: 'Deer and rabbits are herbivores that feed on grass and leaves.', t: 'herbivores' }
+    ] },
+  { g: 'diet', w: 'omnivores', d: 'Animals that eat both plants and meat.',
+    ex: [{ s: 'Bears are omnivores, so they eat fish, berries, and honey.', t: 'omnivores' }] },
+  { g: 'diet', w: 'predator', d: 'An animal that hunts and kills other animals for food.',
+    ex: [{ s: 'The lion is a top predator in the African savanna.', t: 'predator' }] },
+  { g: 'diet', w: 'prey', d: 'An animal that is hunted and eaten by other animals.',
+    ex: [{ s: 'Rabbits are easy prey for foxes and eagles.', t: 'prey' }] },
+
+  { g: 'bio', w: 'mammals', d: 'Animals that give birth to live young and feed them milk.',
+    ex: [
+      { s: 'Whales and dolphins are marine mammals, not fish.', t: 'mammals' },
+      { s: 'Bats are the only mammals that can truly fly.', t: 'mammals' }
+    ] },
+  { g: 'bio', w: 'invertebrates', d: 'Animals with no backbone, such as insects and jellyfish.',
+    ex: [{ s: 'Butterflies and jellyfish are invertebrates because they have no backbone.', t: 'invertebrates' }] },
+
+  { g: 'human', w: 'wild animals', d: 'Animals that live in nature and are not controlled by people.',
+    ex: [{ s: 'Wild animals should be watched from a safe distance.', t: 'Wild animals' }] },
+  { g: 'human', w: 'feral animals', d: 'Domestic animals that have returned to living in the wild.',
+    ex: [{ s: 'Feral animals, such as cats that were once pets, can harm local birds.', t: 'Feral animals' }] },
+  { g: 'human', w: 'domestic animals', d: 'Animals that people keep on farms or at home, such as cows and dogs.',
+    ex: [{ s: 'Cows, pigs, and chickens are domestic animals raised for food.', t: 'domestic animals' }] },
+  { g: 'human', w: 'pets', d: 'Animals that people keep at home for company.',
+    ex: [{ s: 'Many families keep pets, such as cats and dogs, for company.', t: 'pets' }] },
+
+  { g: 'status', w: 'rare animals', d: 'Animals of which very few exist.',
+    ex: [{ s: 'Giant pandas are rare animals that live only in the mountains of China.', t: 'rare animals' }] },
+  { g: 'status', w: 'endangered animals / endangered species', d: 'Animals or plants that may disappear forever if people do not protect them.',
+    ex: [{ s: 'Poaching has pushed numerous endangered species to the brink of extinction.', t: 'endangered species' }] },
+  { g: 'status', w: 'on the verge / brink / edge of extinction', d: 'Very close to disappearing completely.',
+    also: ['on the verge of extinction', 'on the brink of extinction', 'on the edge of extinction'],
+    ex: [
+      { s: 'The Sumatran rhino is on the verge of extinction.', t: 'on the verge of extinction' },
+      { s: 'Several frog species are on the edge of extinction because of habitat loss.', t: 'on the edge of extinction' }
+    ] },
+  { g: 'status', w: 'die out', d: 'To stop existing completely; to become extinct.',
+    ex: [
+      { s: 'Dinosaurs died out millions of years ago.', t: 'died out' },
+      { s: 'Many species will die out if their forests disappear.', t: 'die out' }
+    ] },
+
+  { g: 'threat', w: 'poaching / poach (v.)', d: 'Hunting animals illegally. Illegal hunting = poaching.',
+    ex: [
+      { s: 'Poaching has reduced the number of tigers in the wild.', t: 'Poaching' },
+      { s: 'Rangers arrested two men who tried to poach rhinos in the national park.', t: 'poach' }
+    ] },
+  { g: 'threat', w: 'deforestation', d: 'The cutting down of large areas of forest.',
+    ex: [{ s: 'Deforestation destroys the homes of orangutans in Borneo.', t: 'Deforestation' }] },
+  { g: 'threat', w: 'habitat destruction / habitat loss', d: 'The damage or disappearance of the natural places where animals live.',
+    ex: [
+      { s: 'Habitat destruction is the main reason why many species are disappearing.', t: 'Habitat destruction' },
+      { s: 'Urban expansion causes habitat loss for many birds.', t: 'habitat loss' }
+    ] },
+  { g: 'threat', w: 'pose a threat to sth', d: 'To be a danger to something.',
+    ex: [
+      { s: 'Climate change poses a threat to polar bears.', t: 'poses a threat to' },
+      { s: 'Deforestation poses a serious threat to mammals and amphibians.', t: 'poses a serious threat to' }
+    ] },
+  { g: 'threat', w: 'violate animal rights', d: 'To break the rules that protect animals from cruel treatment.',
+    ex: [{ s: 'Many people believe that circus shows violate animal rights.', t: 'violate animal rights' }] },
+  { g: 'threat', w: 'animal testing', d: 'Using animals in scientific experiments.',
+    ex: [{ s: 'Some cosmetic companies have stopped animal testing after public protests.', t: 'animal testing' }] },
+  { g: 'threat', w: 'keep animals in captivity', d: 'To keep animals in cages, zoos, or other places where they cannot move freely.',
+    ex: [{ s: 'Keeping animals in captivity can make them stressed and unhealthy.', t: 'animals in captivity' }] },
+
+  { g: 'cons', w: 'wildlife conservation', d: 'Protecting wild animals and their natural homes.',
+    ex: [{ s: 'Wildlife conservation helps preserve biodiversity and protect rare animals.', t: 'Wildlife conservation' }] },
+  { g: 'cons', w: 'conserve / preserve', d: 'To protect something and keep it from being damaged or lost.',
+    ex: [
+      { s: 'The government created a national park to conserve tropical forests.', t: 'conserve' },
+      { s: 'Zoos help preserve species that could not survive in the wild.', t: 'preserve' }
+    ] },
+  { g: 'cons', w: 'protect endangered species', d: 'To keep animals that may disappear forever safe from harm.',
+    ex: [{ s: 'Strict laws are needed to protect endangered species.', t: 'protect endangered species' }] },
+  { g: 'cons', w: 'restore natural habitats', d: 'To bring damaged natural places back to their original condition.',
+    ex: [{ s: 'Volunteers are working to restore natural habitats along the river.', t: 'restore natural habitats' }] },
+  { g: 'cons', w: 'biodiversity', d: 'The variety of plant and animal life in a place.',
+    ex: [{ s: 'The Amazon rainforest has incredible biodiversity.', t: 'biodiversity' }] },
+  { g: 'cons', w: 'flora and fauna', d: 'The plants (flora) and animals (fauna) of a particular place.',
+    ex: [{ s: 'The island is famous for its unique flora and fauna.', t: 'flora and fauna' }] },
+  { g: 'cons', w: 'ecological balance', d: 'A stable situation in which living things and their environment depend on each other.',
+    ex: [{ s: 'Removing top predators can destroy the ecological balance of a forest.', t: 'ecological balance' }] },
+  { g: 'cons', w: 'deter (v.)', d: 'To make someone decide not to do something.',
+    ex: [{ s: 'Heavy fines may deter people from hunting protected animals.', t: 'deter' }] },
+  { g: 'cons', w: 'deterrent (n.)', d: 'Something that makes people afraid to do something wrong.',
+    ex: [{ s: 'A high fine is an effective deterrent against illegal fishing.', t: 'deterrent' }] },
+
+  { g: 'adj', w: 'companionable', d: 'Friendly and pleasant to be with.',
+    ex: [{ s: 'Dogs are companionable animals that enjoy human company.', t: 'companionable' }] },
+  { g: 'adj', w: 'aggressive', d: 'Ready to attack or to behave in an angry, violent way.',
+    ex: [{ s: 'Lions can become aggressive when they protect their cubs.', t: 'aggressive' }] },
+  { g: 'adj', w: 'docile', d: 'Calm, gentle, and easy to control.',
+    ex: [{ s: 'Sheep are docile animals that are easy to look after.', t: 'docile' }] },
+  { g: 'adj', w: 'venomous', d: 'Able to poison another animal through a bite or sting.',
+    ex: [{ s: 'Cobras are venomous snakes, so you should keep away from them.', t: 'venomous' }] },
+  { g: 'adj', w: 'migratory', d: 'Moving from one region to another at certain times of the year.',
+    ex: [{ s: 'Migratory birds fly thousands of kilometers to warmer countries in winter.', t: 'Migratory birds' }] },
+
+  { g: 'phrase', w: 'preserve biodiversity', d: 'To protect the variety of living things in an area.',
+    ex: [{ s: 'We must act now to preserve biodiversity for future generations.', t: 'preserve biodiversity' }] },
+  { g: 'phrase', w: 'curb illegal hunting', d: 'To control or limit hunting that is against the law.',
+    ex: [{ s: 'Stricter laws are needed to curb illegal hunting.', t: 'curb illegal hunting' }] },
+  { g: 'phrase', w: 'serve as a strong deterrent', d: 'To be a powerful reason that stops people from doing something wrong.',
+    ex: [{ s: 'Tough penalties serve as a strong deterrent to poachers.', t: 'serve as a strong deterrent' }] },
+  { g: 'phrase', w: 'threaten wildlife habitats', d: 'To put the natural homes of wild animals in danger.',
+    ex: [{ s: 'Road building and farming threaten wildlife habitats across Asia.', t: 'threaten wildlife habitats' }] },
+  { g: 'phrase', w: 'protect animals from extinction', d: 'To stop animals from disappearing forever.',
+    ex: [{ s: 'Breeding programs help protect animals from extinction.', t: 'protect animals from extinction' }] },
+  { g: 'phrase', w: 'maintain ecological balance', d: 'To keep the natural relationships between living things stable.',
+    ex: [{ s: 'Predators help maintain ecological balance by controlling the number of prey.', t: 'maintain ecological balance' }] },
+  { g: 'phrase', w: 'conserve flora and fauna', d: 'To protect the plants and animals of a place.',
+    ex: [{ s: 'The reserve was created to conserve flora and fauna in the region.', t: 'conserve flora and fauna' }] },
+
+  { g: 'sol', w: 'discourage hunting', d: 'To try to make people less willing to hunt.',
+    ex: [{ s: 'High fines discourage hunting in protected areas.', t: 'discourage hunting' }] },
+  { g: 'sol', w: 'raise awareness', d: 'To help more people understand and care about an issue.',
+    ex: [{ s: 'Documentaries raise awareness about the dangers facing sea animals.', t: 'raise awareness' }] },
+  { g: 'sol', w: 'protect habitats', d: 'To keep the natural homes of animals safe.',
+    ex: [{ s: 'Local communities help protect habitats by replanting trees.', t: 'protect habitats' }] },
+  { g: 'sol', w: 'support conservation programs', d: 'To give money or help to projects that protect nature.',
+    ex: [{ s: 'Tourists can support conservation programs by visiting national parks and buying local products.', t: 'support conservation programs' }] }
+];
+
+const KEY = 'animals-flashcards-known-v1';
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw).filter(n => Number.isInteger(n) && n >= 0 && n < CARDS.length));
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {} }
+
+let mode = 'word';
+let group = 'all';
+let onlyUnknown = false;
+let order = CARDS.map((_, i) => i);
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function parts(e) {
+  const i = e.s.toLowerCase().indexOf(e.t.toLowerCase());
+  return [e.s.slice(0, i), e.s.slice(i, i + e.t.length), e.s.slice(i + e.t.length)];
+}
+function sentenceMarked(e) { const [a, m, b] = parts(e); return esc(a) + '<mark>' + esc(m) + '</mark>' + esc(b); }
+function sentenceBlank(e) {
+  const [a, , b] = parts(e);
+  const w = Math.min(Math.max(e.t.length * 0.55, 4), 18);
+  return esc(a) + '<span class="blank" style="width:' + w + 'ch" aria-label="chỗ trống"></span>' + esc(b);
+}
+
+function inScope() { return order.filter(i => group === 'all' || CARDS[i].g === group); }
+function deck() { return inScope().filter(i => !onlyUnknown || !known.has(i)); }
+
+function cardHTML(c) {
+  const chip = '<span class="chip">' + esc(GROUPS[c.g]) + '</span>';
+  const front = mode === 'word'
+    ? chip + '<div class="word">' + esc(c.w) + '</div><span class="hint">Nhấn để lật thẻ</span>'
+    : chip + '<p class="cloze">' + sentenceBlank(c.ex[0]) + '</p><span class="hint">Gợi ý: ' + esc(c.d) + ' Nhấn để xem đáp án.</span>';
+  const back = chip +
+    '<div class="term">' + esc(c.w) + '</div>' +
+    '<p class="def">' + esc(c.d) + '</p>' +
+    (c.also ? '<ul class="syn">' + c.also.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '') +
+    '<div class="exs">' + c.ex.map(e => '<p class="ex">' + sentenceMarked(e) + '</p>').join('') + '</div>';
+  return '<div class="card" id="card" role="button" tabindex="0" aria-label="Thẻ từ vựng, nhấn để lật" style="--accent:' + ACCENT[c.g] + '">' +
+    '<div class="inner"><div class="face front">' + front + '</div><div class="face back">' + back + '</div></div></div>';
+}
+
+function render() {
+  const hadFocus = document.activeElement && document.activeElement.id === 'card';
+  const d = deck();
+  const scope = inScope();
+  const knownInScope = scope.filter(i => known.has(i)).length;
+  if (idx > d.length) idx = d.length;
+  if (idx < 0) idx = 0;
+
+  $('knownTxt').textContent = 'Đã nhớ ' + knownInScope + ' / ' + scope.length;
+
+  if (d.length === 0) {
+    $('pos').textContent = 'Không có thẻ';
+    setBar(0);
+    stage.innerHTML = '<div class="panel"><h2>Hết thẻ để ôn</h2><p>' +
+      (onlyUnknown ? 'Bạn đã nhớ hết các thẻ trong chủ đề này.' : 'Chủ đề này chưa có thẻ.') +
+      '</p><div class="row"><button type="button" class="btn yes" id="showAll">Xem tất cả thẻ</button></div></div>';
+    $('showAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false);
+    return;
+  }
+
+  if (idx >= d.length) {
+    $('pos').textContent = 'Hoàn thành';
+    setBar(100);
+    const unk = d.filter(i => !known.has(i)).length;
+    stage.innerHTML = '<div class="panel"><h2>Xong một vòng!</h2><p>Bạn đã nhớ ' + knownInScope + ' trên ' + scope.length +
+      ' thẻ.' + (unk ? ' Còn ' + unk + ' thẻ chưa nhớ, hãy ôn lại nhé.' : ' Rất tốt, bạn đã nhớ hết các thẻ.') +
+      '</p><div class="row">' + (unk ? '<button type="button" class="btn yes" id="redoUnknown">Ôn thẻ chưa nhớ</button>' : '') +
+      '<button type="button" class="btn" id="redoAll">Học lại từ đầu</button></div></div>';
+    const ru = $('redoUnknown');
+    if (ru) ru.onclick = () => { onlyUnknown = true; $('onlyUnknown').checked = true; idx = 0; render(); };
+    $('redoAll').onclick = () => { onlyUnknown = false; $('onlyUnknown').checked = false; idx = 0; render(); };
+    setNav(false, true);
+    return;
+  }
+
+  $('pos').textContent = 'Thẻ ' + (idx + 1) + ' / ' + d.length;
+  setBar(((idx + 1) / d.length) * 100);
+  stage.innerHTML = cardHTML(CARDS[d[idx]]);
+  const card = $('card');
+  card.addEventListener('click', flip);
+  setNav(true);
+  if (hadFocus) card.focus();
+}
+
+function setBar(p) {
+  $('barFill').style.width = p + '%';
+  document.querySelector('.bar').setAttribute('aria-valuenow', Math.round(p));
+}
+function setNav(active, canGoBack) {
+  $('yes').disabled = !active;
+  $('no').disabled = !active;
+  $('next').disabled = !active;
+  $('prev').disabled = !(active ? idx > 0 : canGoBack);
+}
+
+function flip() { const c = $('card'); if (c) c.classList.toggle('flipped'); }
+function next() { const d = deck(); if (idx < d.length) { idx++; render(); } }
+function prev() { if (idx > 0) { idx--; render(); } }
+function mark(isKnown) {
+  const d = deck();
+  const i = d[idx];
+  if (i === undefined) return;
+  if (isKnown) known.add(i); else known.delete(i);
+  save();
+  if (!(onlyUnknown && isKnown)) idx++;
+  render();
+}
+function shuffle() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  idx = 0;
+  render();
+}
+function setMode(m) {
+  mode = m;
+  $('modeWord').setAttribute('aria-pressed', String(m === 'word'));
+  $('modeCloze').setAttribute('aria-pressed', String(m === 'cloze'));
+  render();
+}
+
+const sel = $('group');
+sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+  Object.keys(GROUPS).map(k => '<option value="' + k + '">' + esc(GROUPS[k]) + '</option>').join('');
+sel.onchange = () => { group = sel.value; idx = 0; render(); };
+
+$('modeWord').onclick = () => setMode('word');
+$('modeCloze').onclick = () => setMode('cloze');
+$('next').onclick = next;
+$('prev').onclick = prev;
+$('yes').onclick = () => mark(true);
+$('no').onclick = () => mark(false);
+$('shuffle').onclick = shuffle;
+$('onlyUnknown').onchange = e => { onlyUnknown = e.target.checked; idx = 0; render(); };
+$('reset').onclick = () => {
+  if (confirm('Xóa toàn bộ tiến độ "Đã nhớ" trên thiết bị này?')) { known.clear(); save(); idx = 0; render(); }
+};
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' || t.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { next(); }
+  else if (e.key === 'ArrowLeft') { prev(); }
+  else if ((e.key === ' ' || e.key === 'Enter') && (t === document.body || t.id === 'card')) {
+    e.preventDefault(); flip();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
